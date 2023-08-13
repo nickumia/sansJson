@@ -30,7 +30,7 @@ supported JSON types. (e.g. `{'a': [1, 'z', False], 0: [3,4,5]}`)
 
 The following cases are not supported:
 - `array` of `dict` JSON (i.e. any list of objects)
-- python` objects` or JSON `dicts`
+- python `objects` (i.e. classes)
 
 
 ## Installation
