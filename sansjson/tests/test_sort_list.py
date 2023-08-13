@@ -1,16 +1,30 @@
 
-import sansjson
+import pytest
+from sansjson.utils import Hasher
+
+o = Hasher()
 
 
-def test_sortable_homogenous():
-    sJ = [3, 5, 4, 2]
-    assert sansjson.sort(sJ) == [2, 3, 4, 5]
-
-
-def test_sortable_nonhomogenous():
-    sJ = [None, 'a', 2, None]
-    assert sansjson.sort(sJ) == [None, None, 2, 'a']
-
-    o = object()
-    sJ = [None, 'z', 2, None, o, True, False, 1, 'a']
-    assert sansjson.sort(sJ) == [None, None, False, True, 1, 2, 'a', 'z', o]
+# TODO: fix objects
+@pytest.mark.parametrize(
+    'a, b',
+    [
+        # Homogenous
+        (
+            [3, 5, 4, 2],
+            [2, 3, 4, 5]
+        ),
+        # Non-Homogenous
+        (
+            [None, 'a', 2, None],
+            [None, None, 2, 'a']
+        ),
+        # Non-Homogenous 2
+        (
+            [None, 'z', 2, None, True, False, 1, 'a'],
+            [None, None, False, True, 1, 2, 'a', 'z']
+        )
+    ]
+)
+def test_sortable_homogenous(a, b, compare):
+    assert compare

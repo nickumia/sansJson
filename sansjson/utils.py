@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 NONHOMOGENOUS_ORDER = [type(None), bool, int, float, str, list, object]
 
 
-class Sorter:
+class Hasher:
 
     def __init__(self):
         self._data = None
@@ -19,6 +19,25 @@ class Sorter:
     @data.setter
     def data(self, v):
         self._data = v
+
+    # def __dict__(self):
+    #     if type(self.data) == object:
+    #         return hash(self.data)
+    #     return super(Hasher, self).__dict__
+
+    def __hash__(self):
+        return hash(json.dumps(self.data))
+
+    def __eq__(self, other):
+        if isinstance(other, Sorter):
+            return hash(self) == hash(Sorter)
+        return NotImplemented
+
+
+class Sorter(Hasher):
+
+    def __init__(self):
+        super(Sorter, self).__init__()
 
     def sortable(self, sans):
         if isinstance(sans, dict):
