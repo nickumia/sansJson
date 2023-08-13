@@ -35,4 +35,4 @@ jobs:
       - name: Install
         run: pip install $REQUIREMENTS
       - name: Test
-        run: coverage run --source=sansjson -m sansjson --disable-pytest-warnings && coverage xml
+        run: coverage run --source=sansjson -m pytest --disable-pytest-warnings && coverage xml
