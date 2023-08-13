@@ -47,11 +47,11 @@ class Sorter:
         if isinstance(context, dict):
             keys = nonhomogenous(context.keys())
             for k in keys:
-                if isinstance(self.data[k], dict) or \
-                   isinstance(self.data[k], list):
-                    new_dict[k] = self.sort(self.data[k])
+                if isinstance(context[k], dict) or \
+                   isinstance(context[k], list):
+                    new_dict[k] = self.sort(context[k])
                 else:
-                    new_dict[k] = self.data[k]
+                    new_dict[k] = context[k]
 
         return new_dict
 
