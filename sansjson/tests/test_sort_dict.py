@@ -67,7 +67,14 @@ import pytest
                  'yh': 'abc'},
              'y': 3,
              'z': 1}
-        )
+        ),
+        # Array of 'objects'
+        # TODO: add support for this?
+        # (
+        #     [{'z': 1, 'a': 2}, {'y': 3, 'c': 4}],
+        #     # [{'a': 2, 'z': 1}, {'c': 4, 'y': 3}]
+        #     [{'c': 4, 'y': 3}, {'a': 2, 'z': 1}]
+        # ),
     ]
 )
 def test_sorted(a, b, compare):

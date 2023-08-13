@@ -11,11 +11,11 @@ def compare(a, b):
 
     c = sansjson.sort(a)
 
-    good = Hasher()
-    good.data = b
-
     reference = Hasher()
-    reference.data = c
+    reference.data = b
+
+    good = Hasher()
+    good.data = c
 
     assert hash(bad) != hash(good)
     assert hash(good) == hash(reference)

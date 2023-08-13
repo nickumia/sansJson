@@ -26,7 +26,10 @@ supported JSON types. (e.g. `{'a': [1, 'z', False], 0: [3,4,5]}`)
 
 - Multi-level `dict` JSON (homogenous + nonhomogenous)
 - `array` JSON (homogenous + nonhomogenous)
-- `array` of `dict` JSON (homogenous + nonhomogenous)
+  - All types except `dict` or `object`
+
+The following cases are not supported:
+- `array` of `dict` JSON (i.e. any list of objects)
 
 
 ## Installation

@@ -89,7 +89,6 @@ def nonhomogenous(sans):
 
         final = []
         for t in NONHOMOGENOUS_ORDER:
-            print(t)
             if t in parts.keys():
                 if isinstance(None, t):
                     final += parts[t]
