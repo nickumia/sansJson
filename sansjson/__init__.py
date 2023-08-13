@@ -7,8 +7,4 @@ def sort(sans):
     if not processor.sortable(sans):
         raise SystemError('Input is not sortable.')
 
-    if isinstance(processor.data, list):
-        return utils.nonhomogenous(sans)
-
-    if isinstance(processor.data, dict):
-        pass
+    return processor.sort()

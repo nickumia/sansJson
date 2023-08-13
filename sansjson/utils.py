@@ -37,6 +37,24 @@ class Sorter:
             return True
         return False
 
+    def sort(self, context=None):
+        new_dict = {}
+        if context is None:
+            context = self.data
+
+        if isinstance(context, list):
+            return nonhomogenous(context)
+        if isinstance(context, dict):
+            keys = nonhomogenous(context.keys())
+            for k in keys:
+                if isinstance(self.data[k], dict) or \
+                   isinstance(self.data[k], list):
+                    new_dict[k] = self.sort(self.data[k])
+                else:
+                    new_dict[k] = self.data[k]
+
+        return new_dict
+
 
 def nonhomogenous(sans):
     try:
