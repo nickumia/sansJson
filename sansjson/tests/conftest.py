@@ -1,7 +1,7 @@
 
 import pytest
 import sansjson
-from sansjson.utils import Hasher
+from sansjson.utils import Hasher, Sorter
 
 
 @pytest.fixture(scope='function')
@@ -20,4 +20,12 @@ def compare(a, b):
     assert hash(bad) != hash(good)
     assert hash(good) == hash(reference)
 
+    return True
+
+
+@pytest.fixture(scope='function')
+def sortable_test(a, b):
+    p = Sorter()
+
+    assert p.sortable(a) is b
     return True
