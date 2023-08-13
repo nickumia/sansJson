@@ -1,0 +1,56 @@
+---
+name: commit
+
+on:
+  push:
+
+jobs:
+  pylint:
+    name: Python lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build
+        run: make build
+      - name: lint
+        run: make lint
+
+  test:
+    name: Pytest
+    runs-on: ubuntu-latest
+    env:
+      aws_access_KI: ${{ secrets.aws_access_key_id }}
+      aws_access_SK: ${{ secrets.aws_secret_access_key }}
+    strategy:
+      fail-fast: false
+      matrix:
+        path: [
+          'tests/processing',
+          'tests/language',
+          # 'tests/natural',
+          # 'examples/locomotion'
+        ]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup AWS
+        run: |
+          mkdir $HOME/.aws
+          touch $HOME/.aws/credentials
+          cat << AWSSDK > $HOME/.aws/credentials
+            [nlpdev]
+            aws_access_key_id = $aws_access_KI
+            aws_secret_access_key = $aws_access_SK
+          AWSSDK
+      - name: build
+        run: make build
+      - name: test
+        run: FILE=${{matrix.path}} make test-cov
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: /home/runner/work/nlp/nlp
+          files: ./coverage.xml

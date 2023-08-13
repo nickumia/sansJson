@@ -1,2 +1,1 @@
-# sansJ
-Your friendly neighborhood json sorter helper
+sansjson/README.md
