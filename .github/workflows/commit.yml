@@ -1,56 +1,38 @@
 ---
-name: commit
+name: Lint + Test
 
 on:
   push:
+
+env:
+  REQUIREMENTS: 'coverage flake8 pytest sansjson/'
 
 jobs:
   pylint:
     name: Python lint
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: build
-        run: make build
-      - name: lint
-        run: make lint
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install
+        run: pip install $REQUIREMENTS
+      - name: Lint
+        run: flake8 . --count --show-source --statistics
 
   test:
-    name: Pytest
+    name: Test
     runs-on: ubuntu-latest
-    env:
-      aws_access_KI: ${{ secrets.aws_access_key_id }}
-      aws_access_SK: ${{ secrets.aws_secret_access_key }}
     strategy:
       fail-fast: false
       matrix:
-        path: [
-          'tests/processing',
-          'tests/language',
-          # 'tests/natural',
-          # 'examples/locomotion'
-        ]
-
+        version: ['3.7', '3.8', '3.9', '3.10']
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: Setup AWS
-        run: |
-          mkdir $HOME/.aws
-          touch $HOME/.aws/credentials
-          cat << AWSSDK > $HOME/.aws/credentials
-            [nlpdev]
-            aws_access_key_id = $aws_access_KI
-            aws_secret_access_key = $aws_access_SK
-          AWSSDK
-      - name: build
-        run: make build
-      - name: test
-        run: FILE=${{matrix.path}} make test-cov
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: /home/runner/work/nlp/nlp
-          files: ./coverage.xml
+          python-version: ${{ matrix.version }}
+      - name: Install
+        run: pip install $REQUIREMENTS
+      - name: Test
+        run: coverage run --source=sansjson -m sansjson --disable-pytest-warnings && coverage xml
