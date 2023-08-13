@@ -10,7 +10,15 @@ NONHOMOGENOUS_ORDER = [type(None), bool, int, float, str, list, object]
 class Sorter:
 
     def __init__(self):
-        self.data = None
+        self._data = None
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, v):
+        self._data = v
 
     def sortable(self, sans):
         if isinstance(sans, dict):
