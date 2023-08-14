@@ -5,7 +5,7 @@ on:
   push:
 
 env:
-  REQUIREMENTS: 'coverage flake8 pytest sansjson/'
+  REQUIREMENTS: 'coverage flake8 pytest .'
 
 jobs:
   pylint:
