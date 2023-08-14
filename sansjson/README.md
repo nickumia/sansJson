@@ -1,5 +1,5 @@
 # sansJson
-[![Tests](https://github.com/nickumia/sansjson/actions/workflows/test.yml/badge.svg)](https://github.com/nickumia/sansjson/actions/workflows/test.yml)
+[![Tests](https://github.com/nickumia/sansjson/actions/workflows/commit.yml/badge.svg)](https://github.com/nickumia/sansjson/actions/workflows/commit.yml)
 [![PyPI version](https://badge.fury.io/py/sansjson.svg)](https://badge.fury.io/py/sansjson)
 
 Your friendly neighborhood JSON sorter helper!
