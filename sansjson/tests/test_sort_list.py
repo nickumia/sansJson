@@ -19,7 +19,12 @@ o = Hasher()
             [None, 'a', 2, None],
             [None, None, 2, 'a']
         ),
-        # Non-Homogenous 2
+        # Non-Homogenous Array 2
+        (
+            ['z', 1, 'a', 2, 'y', 3, 'c', 4],
+            [1, 2, 3, 4, 'a', 'c', 'y', 'z']
+        ),
+        # Non-Homogenous 3
         (
             [None, 'z', 2, None, True, False, 1, 'a'],
             [None, None, False, True, 1, 2, 'a', 'z']
