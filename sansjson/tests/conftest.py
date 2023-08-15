@@ -27,5 +27,5 @@ def compare(a, b):
 def sortable_test(a, b):
     p = Sorter()
 
-    assert p.sortable(a) is b
+    assert p.is_sortable(a) is b
     return True
