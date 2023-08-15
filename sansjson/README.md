@@ -46,4 +46,7 @@ pip install sansjson
 >>> to_sort = {'a': 0, 'g': [3, 1, 3, 2], 'c': 1, 'f': 2}
 >>> sansjson.sort(to_sort)
 {'a': 0, 'c': 1, 'f': 2, 'g': [1, 2, 3, 3]}
+>>> a = {'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}}
+>>> sansjson.sort(a)
+{'a': {'12': True, 'ap': 0, 'ef': [False, 1, 'a']}, 'z': 1}
 ```

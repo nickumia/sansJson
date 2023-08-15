@@ -68,6 +68,19 @@ import pytest
              'y': 3,
              'z': 1}
         ),
+        # Two-levels with list as leaf
+        (
+            {'z': 1,
+             'a': {
+                 '12': True,
+                 'ef': ['a', 1, False],
+                 'ap': 0}},
+            {'a': {
+                '12': True,
+                'ap': 0,
+                'ef': [False, 1, 'a']},
+             'z': 1}
+        ),
         # Array of 'objects'
         # TODO: add support for this?
         # (
