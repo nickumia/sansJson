@@ -1,10 +1,12 @@
 
+from copy import deepcopy
+import functools
 import json
 import logging
 
 log = logging.getLogger(__name__)
 
-NONHOMOGENOUS_ORDER = [type(None), bool, int, float, str, list, object]
+NONHOMOGENOUS_ORDER = {type(None): 1, bool: 2, int: 3, float: 4, str: 5, list: 6, object: 7, dict: 8}
 
 
 class Hasher:
@@ -67,26 +69,111 @@ class Sorter(Hasher):
             return True
         return False
 
+    def recursive_dict(self, context):
+        sorted_dict = {}
+        keys = nonhomogenous(context.keys())
+        for k in keys:
+            if self.is_sortable(context[k]):
+                # BRANCH: recursively check values
+                sorted_dict[k] = self.sort(context[k])
+            else:
+                # LEAF: basic data types
+                sorted_dict[k] = context[k]
+        return sorted_dict
+
     def sort(self, context=None):
         sorted_dict = {}
         if context is None:
             context = self.data
 
         if isinstance(context, list):
+            # BRANCH: list of dicts
+            if any([isinstance(i, dict) for i in context]):
+                new_list = []
+
+                for i, element in enumerate(context):
+                    if isinstance(element, dict):
+                        sorted_element = self.recursive_dict(element)
+                        new_list.append(sorted_element)
+                    else:
+                        new_list.append(element)
+                return nonhomogenous(new_list)
             # LEAF: just sort list
             return nonhomogenous(context)
         if isinstance(context, dict):
             # BRANCH: sort keys
-            keys = nonhomogenous(context.keys())
-            for k in keys:
-                if self.is_sortable(context[k]):
-                    # BRANCH: recursively check values
-                    sorted_dict[k] = self.sort(context[k])
-                else:
-                    # LEAF: basic data types
-                    sorted_dict[k] = context[k]
+            sorted_dict = self.recursive_dict(context)
 
         return sorted_dict
+
+
+def dict_sort_key(dicta, dictb):
+    try:
+        k1 = list(dicta.keys())[0]
+    except IndexError:
+        k1 = None
+    # except AttributeError:
+    #     k1 = dicta
+    try:
+        k2 = list(dictb.keys())[0]
+    except IndexError:
+        k2 = None
+    # except AttributeError:
+    #     k2 = dictb
+
+    # if k1 == dicta and k2 == dictb:
+    #     if k1 > k2:
+    #         return 1
+    #     elif k2 > k1:
+    #         return -1
+    #     else:
+    #         return 0
+
+    if k1 is None and k2 is None:
+        return 0
+    if k1 is None and k2 is not None:
+        return -1
+    if k1 is not None and k2 is None:
+        return 1
+
+    # JSON keys are ALWAYS str
+    if k1 == k2:
+        v1_type = type(dicta[k1])
+        v2_type = type(dictb[k2])
+        if v1_type != v2_type:
+            if NONHOMOGENOUS_ORDER[v1_type] > NONHOMOGENOUS_ORDER[v2_type]:
+                return 1
+            else:
+                # NONHOMOGENOUS_ORDER[v1_type] < NONHOMOGENOUS_ORDER[v2_type]:
+                return -1
+        else:
+            print(dicta[k1], dictb[k2])
+            if dicta[k1] == dictb[k2]:
+                dicta_copy = deepcopy(dicta)
+                dictb_copy = deepcopy(dictb)
+                del dicta_copy[k1]
+                del dictb_copy[k2]
+                return dict_sort_key(dicta_copy, dictb_copy)
+            else:
+                if dicta[k1] > dictb[k2]:
+                    return 1
+                else:
+                    return -1
+                # sorted_items = sorted([dicta[k1], dictb[k2]], key=functools.cmp_to_key(dict_sort_key))
+                # if sorted_items[0] == dicta[k2]:
+                #     return 1
+                # else:
+                #     return -1
+    else:
+        if k1 > k2:
+            return 1
+        else:
+             return -1
+        # sorted_items = sorted([k1, k2], key=functools.cmp_to_key(dict_sort_key))
+        # if sorted_items[0] == dicta[k2]:
+        #     return 1
+        # else:
+        #     return -1
 
 
 def nonhomogenous(sans):
@@ -99,6 +186,9 @@ def nonhomogenous(sans):
         # homogenous
         return sorted(sans)
     except TypeError:
+
+        # TODO: nonhomogenous list of dicts and non-dicts
+
         # nonhomogenous
         data_groups = {}
         for element in sans:
@@ -113,6 +203,8 @@ def nonhomogenous(sans):
             if dt in data_groups.keys():
                 if isinstance(None, dt):
                     final += data_groups[dt]
+                elif dict == dt:
+                    final += sorted(data_groups[dt], key=functools.cmp_to_key(dict_sort_key))
                 else:
                     final += sorted(data_groups[dt])
 
