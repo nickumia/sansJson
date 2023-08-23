@@ -133,18 +133,18 @@ def dict_sort_key(dicta, dictb):
     dicta_list = False
     dictb_list = False
     try:
-        k1 = list(dicta.keys())[0]
+        k_a = list(dicta.keys())[0]
     except IndexError:
         # No more keys
-        k1 = None
+        k_a = None
     except AttributeError:
         # list to list compare
         dicta_list = sorted([dicta], key=functools.cmp_to_key(dict_sort_key))
     try:
-        k2 = list(dictb.keys())[0]
+        k_b = list(dictb.keys())[0]
     except IndexError:
         # No more keys
-        k2 = None
+        k_b = None
     except AttributeError:
         # list to list compare
         dictb_list = sorted([dictb], key=functools.cmp_to_key(dict_sort_key))
@@ -156,17 +156,17 @@ def dict_sort_key(dicta, dictb):
                       key=functools.cmp_to_key(dict_sort_key))
 
     # Dict with less keys is 'smaller'
-    if k1 is None and k2 is None:
+    if k_a is None and k_b is None:
         return 0
-    if k1 is None and k2 is not None:
+    if k_a is None and k_b is not None:
         return -1
-    if k1 is not None and k2 is None:
+    if k_a is not None and k_b is None:
         return 1
 
     # First, compare keys
-    if k1 == k2:
-        v1_type = type(dicta[k1])
-        v2_type = type(dictb[k2])
+    if k_a == k_b:
+        v1_type = type(dicta[k_a])
+        v2_type = type(dictb[k_b])
         # Second, compare values
         if v1_type != v2_type:
             # Most likely scenario -> one value is a list and the other is not.
@@ -176,38 +176,38 @@ def dict_sort_key(dicta, dictb):
             else:
                 return -1
         else:
-            if dicta[k1] == dictb[k2]:
+            if dicta[k_a] == dictb[k_b]:
                 # key-value pairs are equal ...
                 # Delete them and move to the next key-value
                 dicta_copy = deepcopy(dicta)
                 dictb_copy = deepcopy(dictb)
-                del dicta_copy[k1], dictb_copy[k2]
+                del dicta_copy[k_a], dictb_copy[k_b]
                 return dict_sort_key(dicta_copy, dictb_copy)
             else:
                 # WORST NIGHTMARE: same as the last nightmare ;)
-                if isinstance(dicta[k1], list) and isinstance(dictb[k2], list):
-                    if isinstance(dicta[k1][0], dict) and isinstance(dictb[k2][0], dict):  # NOQA E501
-                        smallest_key = dict_sort_key(dicta[k1], dictb[k2])
+                if isinstance(dicta[k_a], list) and isinstance(dictb[k_b], list):  # NOQA E501
+                    if isinstance(dicta[k_a][0], dict) and isinstance(dictb[k_b][0], dict):  # NOQA E501
+                        smallest_key = dict_sort_key(dicta[k_a], dictb[k_b])
                         # Find the first unique key that is smaller.
                         # Otherwise, all keys are the same, default to
                         # first dict as smaller.
                         for dict_items in smallest_key:
                             for key, value in dict_items.items():
-                                if key in dicta[k1][0]:
-                                    if dicta[k1][0][key] == value:
-                                        if key not in dictb[k2][0]:
+                                if key in dicta[k_a][0]:
+                                    if dicta[k_a][0][key] == value:
+                                        if key not in dictb[k_b][0]:
                                             return -1
-                                elif key in dictb[k2][0]:
-                                    if dictb[k2][0][key] == value:
-                                        if key not in dicta[k1][0]:
+                                elif key in dictb[k_b][0]:
+                                    if dictb[k_b][0][key] == value:
+                                        if key not in dicta[k_a][0]:
                                             return 1
-                elif dicta[k1] > dictb[k2]:
+                elif dicta[k_a] > dictb[k_b]:
                     return 1
-                elif dicta[k1] < dictb[k2]:
+                elif dicta[k_a] < dictb[k_b]:
                     return -1
                 return 0
     else:
-        if k1 > k2:
+        if k_a > k_b:
             return 1
         else:
             return -1
