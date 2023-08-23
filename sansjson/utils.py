@@ -201,7 +201,6 @@ def dict_sort_key(dicta, dictb):
                                     if dictb[k2][0][key] == value:
                                         if key not in dicta[k1][0]:
                                             return 1
-                        return -1
                 elif dicta[k1] > dictb[k2]:
                     return 1
                 elif dicta[k1] < dictb[k2]:
