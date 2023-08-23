@@ -6,7 +6,10 @@ import logging
 
 log = logging.getLogger(__name__)
 
-NONHOMOGENOUS_ORDER = {type(None): 1, bool: 2, int: 3, float: 4, str: 5, list: 6, object: 7, dict: 8}
+NONHOMOGENOUS_ORDER = {
+    type(None): 1, bool: 2, int: 3, float: 4, str: 5, list: 6,
+    object: 7, dict: 8
+}
 
 
 class Hasher:
@@ -183,7 +186,7 @@ def dict_sort_key(dicta, dictb):
             else:
                 # WORST NIGHTMARE: same as the last nightmare ;)
                 if isinstance(dicta[k1], list) and isinstance(dictb[k2], list):
-                    if isinstance(dicta[k1][0], dict) and isinstance(dictb[k2][0], dict):
+                    if isinstance(dicta[k1][0], dict) and isinstance(dictb[k2][0], dict):  # NOQA E501
                         smallest_key = dict_sort_key(dicta[k1], dictb[k2])
                         # Find the first unique key that is smaller.
                         # Otherwise, all keys are the same, default to
@@ -201,7 +204,7 @@ def dict_sort_key(dicta, dictb):
                         return -1
                 elif dicta[k1] > dictb[k2]:
                     return 1
-                elif dicta[k1] < dictb[k2]
+                elif dicta[k1] < dictb[k2]:
                     return -1
                 return 0
     else:
@@ -236,7 +239,8 @@ def nonhomogenous(sans):
                 if isinstance(None, dt):
                     final += data_groups[dt]
                 elif dict == dt:
-                    final += sorted(data_groups[dt], key=functools.cmp_to_key(dict_sort_key))
+                    final += sorted(data_groups[dt],
+                                    key=functools.cmp_to_key(dict_sort_key))
                 else:
                     final += sorted(data_groups[dt])
 
