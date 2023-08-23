@@ -1,6 +1,7 @@
 # sansJson
 [![Tests](https://github.com/nickumia/sansjson/actions/workflows/commit.yml/badge.svg)](https://github.com/nickumia/sansjson/actions/workflows/commit.yml)
 [![PyPI version](https://badge.fury.io/py/sansjson.svg)](https://badge.fury.io/py/sansjson)
+[![codecov](https://codecov.io/gh/nickumia/sansJson/graph/badge.svg?token=102NN3LK3F)](https://codecov.io/gh/nickumia/sansJson)
 
 Your friendly neighborhood JSON sorter helper!
 
