@@ -102,6 +102,31 @@ class Sorter(Hasher):
 
 
 def dict_sort_key(dicta, dictb):
+    '''
+    Custom dictionary comparison function
+
+    Iterate through all key-value pairs.  The first key or value that is
+    smaller decides the sorting order.
+    e.g.1.  a = {'q': 8, 'w': 2}
+            b = {'q': 2, 'w': 8}
+        --> b is smaller because 2 < 8 for 'q' key.
+
+    e.g.2.  a = {'q': 2, 'w': 3}
+            b = {'q': 2, 'w': 0}
+        --> b is smaller because 0 < 3 for 'w' key.
+
+    e.g.3.  a = {'q': 0, 'w': 0}
+            b = {'q': 0, 'w': 0}
+        --> a is smaller because both are identical and a was passed first.
+
+    -1 --> dicta is smaller
+    +1 --> dictb is smaller
+    0 --> dicta == dictb
+
+    NOTE 1: JSON keys are guaranteed to be 'str'.  This function has that
+    assumption embedded.
+    NOTE 2: Dictionaries are assumed to be sorted before this function call.
+    '''
     dicta_list = False
     dictb_list = False
     try:
@@ -122,15 +147,10 @@ def dict_sort_key(dicta, dictb):
         dictb_list = sorted([dictb], key=functools.cmp_to_key(dict_sort_key))
 
     if dicta_list and dictb_list:
-        return sorted(dicta_list[0] + dictb_list[0], key=functools.cmp_to_key(dict_sort_key))
-
-    # if k1 == dicta and k2 == dictb:
-    #     if k1 > k2:
-    #         return 1
-    #     elif k2 > k1:
-    #         return -1
-    #     else:
-    #         return 0
+        # WORST NIGHTMARE: full sorting not possible
+        # Find the smallest keys between both dicts
+        return sorted(dicta_list[0] + dictb_list[0],
+                      key=functools.cmp_to_key(dict_sort_key))
 
     # Dict with less keys is 'smaller'
     if k1 is None and k2 is None:
@@ -140,27 +160,34 @@ def dict_sort_key(dicta, dictb):
     if k1 is not None and k2 is None:
         return 1
 
-    # JSON keys are ALWAYS str
+    # First, compare keys
     if k1 == k2:
         v1_type = type(dicta[k1])
         v2_type = type(dictb[k2])
+        # Second, compare values
         if v1_type != v2_type:
+            # Most likely scenario -> one value is a list and the other is not.
+            # Use NONHOMOGENOUS_ORDER to determine sorting priority
             if NONHOMOGENOUS_ORDER[v1_type] > NONHOMOGENOUS_ORDER[v2_type]:
                 return 1
             else:
-                # NONHOMOGENOUS_ORDER[v1_type] < NONHOMOGENOUS_ORDER[v2_type]:
                 return -1
         else:
             if dicta[k1] == dictb[k2]:
+                # key-value pairs are equal ...
+                # Delete them and move to the next key-value
                 dicta_copy = deepcopy(dicta)
                 dictb_copy = deepcopy(dictb)
-                del dicta_copy[k1]
-                del dictb_copy[k2]
+                del dicta_copy[k1], dictb_copy[k2]
                 return dict_sort_key(dicta_copy, dictb_copy)
             else:
+                # WORST NIGHTMARE: same as the last nightmare ;)
                 if isinstance(dicta[k1], list) and isinstance(dictb[k2], list):
                     if isinstance(dicta[k1][0], dict) and isinstance(dictb[k2][0], dict):
                         smallest_key = dict_sort_key(dicta[k1], dictb[k2])
+                        # Find the first unique key that is smaller.
+                        # Otherwise, all keys are the same, default to
+                        # first dict as smaller.
                         for dict_items in smallest_key:
                             for key, value in dict_items.items():
                                 if key in dicta[k1][0]:
@@ -171,10 +198,12 @@ def dict_sort_key(dicta, dictb):
                                     if dictb[k2][0][key] == value:
                                         if key not in dicta[k1][0]:
                                             return 1
+                        return -1
                 elif dicta[k1] > dictb[k2]:
                     return 1
-                else:
+                elif dicta[k1] < dictb[k2]
                     return -1
+                return 0
     else:
         if k1 > k2:
             return 1
@@ -192,9 +221,6 @@ def nonhomogenous(sans):
         # homogenous
         return sorted(sans)
     except TypeError:
-
-        # TODO: nonhomogenous list of dicts and non-dicts
-
         # nonhomogenous
         data_groups = {}
         for element in sans:
