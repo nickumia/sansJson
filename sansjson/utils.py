@@ -108,18 +108,27 @@ class Sorter(Hasher):
 
 
 def dict_sort_key(dicta, dictb):
+    dicta_list = False
+    dictb_list = False
     try:
         k1 = list(dicta.keys())[0]
     except IndexError:
+        # No more keys
         k1 = None
-    # except AttributeError:
-    #     k1 = dicta
+    except AttributeError:
+        # list to list compare
+        dicta_list = sorted([dicta], key=functools.cmp_to_key(dict_sort_key))
     try:
         k2 = list(dictb.keys())[0]
     except IndexError:
+        # No more keys
         k2 = None
-    # except AttributeError:
-    #     k2 = dictb
+    except AttributeError:
+        # list to list compare
+        dictb_list = sorted([dictb], key=functools.cmp_to_key(dict_sort_key))
+
+    if dicta_list and dictb_list:
+        return sorted(dicta_list[0] + dictb_list[0], key=functools.cmp_to_key(dict_sort_key))
 
     # if k1 == dicta and k2 == dictb:
     #     if k1 > k2:
@@ -129,6 +138,7 @@ def dict_sort_key(dicta, dictb):
     #     else:
     #         return 0
 
+    # Dict with less keys is 'smaller'
     if k1 is None and k2 is None:
         return 0
     if k1 is None and k2 is not None:
@@ -147,7 +157,6 @@ def dict_sort_key(dicta, dictb):
                 # NONHOMOGENOUS_ORDER[v1_type] < NONHOMOGENOUS_ORDER[v2_type]:
                 return -1
         else:
-            print(dicta[k1], dictb[k2])
             if dicta[k1] == dictb[k2]:
                 dicta_copy = deepcopy(dicta)
                 dictb_copy = deepcopy(dictb)
@@ -155,25 +164,28 @@ def dict_sort_key(dicta, dictb):
                 del dictb_copy[k2]
                 return dict_sort_key(dicta_copy, dictb_copy)
             else:
-                if dicta[k1] > dictb[k2]:
+                if isinstance(dicta[k1], list) and isinstance(dictb[k2], list):
+                    if isinstance(dicta[k1][0], dict) and isinstance(dictb[k2][0], dict):
+                        smallest_key = dict_sort_key(dicta[k1], dictb[k2])
+                        for dict_items in smallest_key:
+                            for key, value in dict_items.items():
+                                if key in dicta[k1][0]:
+                                    if dicta[k1][0][key] == value:
+                                        if key not in dictb[k2][0]:
+                                            return -1
+                                elif key in dictb[k2][0]:
+                                    if dictb[k2][0][key] == value:
+                                        if key not in dicta[k1][0]:
+                                            return 1
+                elif dicta[k1] > dictb[k2]:
                     return 1
                 else:
                     return -1
-                # sorted_items = sorted([dicta[k1], dictb[k2]], key=functools.cmp_to_key(dict_sort_key))
-                # if sorted_items[0] == dicta[k2]:
-                #     return 1
-                # else:
-                #     return -1
     else:
         if k1 > k2:
             return 1
         else:
-             return -1
-        # sorted_items = sorted([k1, k2], key=functools.cmp_to_key(dict_sort_key))
-        # if sorted_items[0] == dicta[k2]:
-        #     return 1
-        # else:
-        #     return -1
+            return -1
 
 
 def nonhomogenous(sans):
