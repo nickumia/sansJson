@@ -74,7 +74,7 @@ class Sorter(Hasher):
         keys = nonhomogenous(context.keys())
         for k in keys:
             if self.is_sortable(context[k]):
-                # BRANCH: recursively check values
+                # BRANCH: recursively sort values
                 sorted_dict[k] = self.sort(context[k])
             else:
                 # LEAF: basic data types
@@ -87,21 +87,15 @@ class Sorter(Hasher):
             context = self.data
 
         if isinstance(context, list):
-            # BRANCH: list of dicts
-            if any([isinstance(i, dict) for i in context]):
-                new_list = []
-
-                for i, element in enumerate(context):
-                    if isinstance(element, dict):
-                        sorted_element = self.recursive_dict(element)
-                        new_list.append(sorted_element)
-                    else:
-                        new_list.append(element)
-                return nonhomogenous(new_list)
-            # LEAF: just sort list
-            return nonhomogenous(context)
+            # LEAF/SPROUT: list of anything
+            # LEAF component -> it's just a list
+            # SPROUT component -> dicts need further attention
+            return nonhomogenous([
+                self.recursive_dict(element) if isinstance(element, dict)
+                else element for element in context
+            ])
         if isinstance(context, dict):
-            # BRANCH: sort keys
+            # BRANCH: sort keys + values
             sorted_dict = self.recursive_dict(context)
 
         return sorted_dict
