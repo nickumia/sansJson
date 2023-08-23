@@ -50,6 +50,42 @@ o = Hasher()
              {'a': [{'r': 0}, {'y': 0}, {'y': 3}]},
              {'a': [{'s': 8}, {'x': 9}]}]
         ),
+        # Array of dicts -- first dict longer
+        (
+            [{'a': 1, 'c': 3, 'b': 2}, {'b': 2, 'a': 1}],
+            [{'a': 1, 'b': 2}, {'a': 1, 'b': 2, 'c': 3}]
+        ),
+        # Array of dicts -- second dict longer
+        (
+            [{'b': 2, 'a': 1}, {'a': 1, 'c': 3, 'b': 2}],
+            [{'a': 1, 'b': 2}, {'a': 1, 'b': 2, 'c': 3}]
+        ),
+        # Array of dicts -- dicts are the same size
+        (
+            [{'b': 2, 'a': 1}, {'a': 1, 'b': 2}],
+            [{'a': 1, 'b': 2}, {'a': 1, 'b': 2}]
+        ),
+        # Array of dicts -- nonhomogenous values
+        # TODO: doesn't work
+        # (
+        #     [{'a': [1, {1: 3}, False]}, {'a': [1, {1: 1}, False]}],
+        #     [{'a': [False, 1, {1: 1}]}, {'a': [False, 1, {1: 3}]}]
+        # ),
+        # Array of dicts -- value variant 2
+        (
+            [{'a': [{1: 3}, {1: 1}]}, {'a': [{1: 5}, {1: 1}]}],
+            [{'a': [{1: 1}, {1: 3}]}, {'a': [{1: 1}, {1: 5}]}]
+        ),
+        # Array of dicts -- value variant 3
+        (
+            [{'a': [{2: 3}, {1: 1}]}, {'a': [{4: 5}, {1: 1}]}],
+            [{'a': [{1: 1}, {2: 3}]}, {'a': [{1: 1}, {4: 5}]}]
+        ),
+        # Array of dicts -- value variant 4 (list + non-list)
+        (
+            [{'a': [{1: 3}, {1: 1}]}, {'a': 1}],
+            [{'a': 1}, {'a': [{1: 1}, {1: 3}]}]
+        ),
     ]
 )
 def test_sortable_homogenous(a, b, compare):
