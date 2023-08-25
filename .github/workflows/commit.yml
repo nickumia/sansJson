@@ -5,7 +5,7 @@ on:
   push:
 
 env:
-  REQUIREMENTS: 'coverage flake8 pytest .'
+  REQUIREMENTS: 'coverage flake8 pytest pyperf .'
 
 jobs:
   pylint:
@@ -40,3 +40,27 @@ jobs:
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  benchmark:
+    name: Benchmark code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.version }}
+      - name: Install
+        run: pip install $REQUIREMENTS
+      - name: Benchmark - Basic Test
+        run: |
+          python -m timeit -s "import sansjson" "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})"
+          python -m pyperf timeit -s "import sansjson"  "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench.json
+          python -m pyperf stats bench.json
+      - name: Benchmark - Full Test
+        run: >
+          wget -O data.json https://rpm.tigbox.com/test/JSON-DOI/data.10.pretty.json;
+          python -m pyperf timeit -s "import sansjson; import json"  "\
+with open('data.json', 'r') as jfile: datasets = json.load(jfile)\
+for dataset in datasets['dataset']: sansjson.sort(dataset)" -o bench.json;
+          python -m pyperf stats bench.json
