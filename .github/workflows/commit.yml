@@ -55,10 +55,17 @@ jobs:
       - name: Benchmark - Basic Test
         run: |
           python -m timeit -s "import sansjson" "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})"
-          python -m pyperf timeit -s "import sansjson"  "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench.json
-          python -m pyperf stats bench.json
+          python -m pyperf timeit -s "import sansjson"  "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench_basic.json
+          python -m pyperf stats bench_basic.json
       - name: Benchmark - Full Test
         run: |
           # wget -O data.json <remote-source>;
-          python -m pyperf timeit -s "import sansjson" "$(cat benchmark.py)" -o bench.json;
-          python -m pyperf stats bench.json
+          python -m pyperf timeit -s "import sansjson" "$(cat benchmark.py)" -o bench_full.json;
+          python -m pyperf stats bench_full.json
+      - name: Benchmark Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-json
+          path: |
+            ./bench_basic.json
+            ./bench_full.json
