@@ -64,8 +64,8 @@ class Sorter(Hasher):
                 self.data = json.loads(deck)
                 return True
             except json.decoder.JSONDecodeError:
-                log.error(
-                    'Input is str, but could not be parsed into JSON dict.')
+                # log.error(
+                #     'Input is str, but could not be parsed into JSON dict.')
                 return False
         if isinstance(deck, list):
             self.data = deck
