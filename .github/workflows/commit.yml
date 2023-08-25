@@ -17,7 +17,7 @@ jobs:
       - name: Install
         run: pip install $REQUIREMENTS
       - name: Lint
-        run: flake8 . --count --show-source --statistics
+        run: flake8 sansjson --count --show-source --statistics
 
   test:
     name: Test
@@ -58,9 +58,7 @@ jobs:
           python -m pyperf timeit -s "import sansjson"  "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench.json
           python -m pyperf stats bench.json
       - name: Benchmark - Full Test
-        run: >
-          wget -O data.json https://rpm.tigbox.com/test/JSON-DOI/data.10.pretty.json;
-          python -m pyperf timeit -s "import sansjson; import json"  "\
-with open('data.json', 'r') as jfile: datasets = json.load(jfile)\
-for dataset in datasets['dataset']: sansjson.sort(dataset)" -o bench.json;
+        run: |
+          # wget -O data.json <remote-source>;
+          python -m pyperf timeit -s "import sansjson" "$(cat benchmark.py)" -o bench.json;
           python -m pyperf stats bench.json
