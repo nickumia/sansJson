@@ -49,7 +49,6 @@ class Sorter(Hasher):
     Supported types:
         - _dict_: sort key order
         - _list_: see 'nonhomogenous'
-        - _str_: convert to _dict_
     '''
 
     def __init__(self):
@@ -59,14 +58,6 @@ class Sorter(Hasher):
         if isinstance(deck, dict):
             self.data = deck
             return True
-        if isinstance(deck, str):
-            try:
-                self.data = json.loads(deck)
-                return True
-            except json.decoder.JSONDecodeError:
-                # log.error(
-                #     'Input is str, but could not be parsed into JSON dict.')
-                return False
         if isinstance(deck, list):
             self.data = deck
             return True
@@ -102,6 +93,31 @@ class Sorter(Hasher):
             sorted_dict = self.recursive_dict(context)
 
         return sorted_dict
+
+
+class JSONSorter(Sorter):
+    '''
+    Sorter class to specifically handle JSON string input
+
+    Supported types:
+        - _str_: convert to _dict_
+    '''
+
+    def __init__(self):
+        super(JSONSorter, self).__init__()
+
+    def is_sortable(self, deck):
+        if isinstance(deck, str):
+            try:
+                self.data = json.loads(deck)
+                return True
+            except json.decoder.JSONDecodeError:
+                return False
+        return False
+
+    def sort(self, context=None):
+        data = super(JSONSorter, self).sort(context)
+        return json.dumps(data)
 
 
 def dict_sort_key(dicta, dictb):
