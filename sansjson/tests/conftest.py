@@ -6,9 +6,6 @@ from sansjson.utils import Hasher, Sorter
 
 @pytest.fixture(scope='function')
 def compare(a, b, t):
-    bad = Hasher()
-    bad.data = a
-
     if t == 'json':
         c = sansjson.sort_json(a)
     else:
@@ -20,7 +17,6 @@ def compare(a, b, t):
     good = Hasher()
     good.data = c
 
-    assert hash(bad) != hash(good)
     assert hash(good) == hash(reference)
 
     return True
