@@ -5,11 +5,11 @@ from sansjson.utils import Hasher, Sorter, JSONSorter
 
 
 @pytest.fixture(scope='function')
-def compare(a, b, function='pyobject'):
+def compare(a, b, t):
     bad = Hasher()
     bad.data = a
 
-    if function == 'json':
+    if t == 'json':
         c = sansjson.sort_json(a)
     else:
         c = sansjson.sort_pyobject(a)

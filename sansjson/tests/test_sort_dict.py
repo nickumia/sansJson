@@ -3,12 +3,12 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    'a, b',
+    'a, b, t',
     [
         # One-level
         (
             {'z': 1, 'a': 2, 'y': 3, 'c': 4},
-            {'a': 2, 'c': 4, 'y': 3, 'z': 1}
+            {'a': 2, 'c': 4, 'y': 3, 'z': 1}, 'pyobject'
         ),
         # Two-levels
         (
@@ -31,7 +31,7 @@ import pytest
                  'ue': 'def',
                  'yh': 'abc'},
              'y': 3,
-             'z': 1}
+             'z': 1}, 'pyobject'
         ),
         # Three-levels
         (
@@ -66,7 +66,7 @@ import pytest
                  'ue': 'def',
                  'yh': 'abc'},
              'y': 3,
-             'z': 1}
+             'z': 1}, 'pyobject'
         ),
         # Two-levels with list as leaf
         (
@@ -79,9 +79,9 @@ import pytest
                 '12': True,
                 'ap': 0,
                 'ef': [False, 1, 'a']},
-             'z': 1}
+             'z': 1}, 'pyobject'
         ),
     ]
 )
-def test_sorted(a, b, compare):
+def test_sorted(a, b, t, compare):
     assert compare
