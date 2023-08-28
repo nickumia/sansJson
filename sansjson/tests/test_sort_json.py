@@ -5,6 +5,10 @@ import pytest
 @pytest.mark.parametrize(
     'a, b, t',
     [
+        # Super Basic
+        (
+            '{"a": "1"}', '{"a": "1"}', "json"
+        ),
         # Two-levels with list as leaf
         (
             '{"z": 1, "a": {"12": true, "ef": ["a", 1, false], "ap": 0}}',
