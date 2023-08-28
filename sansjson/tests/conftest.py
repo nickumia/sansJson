@@ -1,7 +1,7 @@
 
 import pytest
 import sansjson
-from sansjson.utils import Hasher, Sorter, JSONSorter
+from sansjson.utils import Hasher, Sorter
 
 
 @pytest.fixture(scope='function')
@@ -29,8 +29,7 @@ def compare(a, b, t):
 @pytest.fixture(scope='function')
 def sortable_test(a, p, j):
     m = Sorter()
-    n = JSONSorter()
 
     assert m.is_sortable(a) is p
-    assert n.is_sortable(a) is j
+    assert m.is_json_sortable(a) is j
     return True

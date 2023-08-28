@@ -11,8 +11,8 @@ def sort_pyobject(sans):
 
 
 def sort_json(sans):
-    processor = utils.JSONSorter()
-    if not processor.is_sortable(sans):
+    processor = utils.Sorter()
+    if not processor.is_json_sortable(sans):
         raise SystemError('Input is not sortable.')
 
-    return processor.sort()
+    return utils._convert_to_json(processor.sort())
