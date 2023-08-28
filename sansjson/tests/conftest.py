@@ -27,16 +27,10 @@ def compare(a, b, function='pyobject'):
 
 
 @pytest.fixture(scope='function')
-def json_sortable_test(a, b):
+def sortable_test(a, py_sortable, json_sortable):
+    q = Sorter()
     p = JSONSorter()
 
-    assert p.is_sortable(a) is b
-    return True
-
-
-@pytest.fixture(scope='function')
-def pyobject_sortable_test(a, b):
-    p = Sorter()
-
-    assert p.is_sortable(a) is b
+    assert p.is_sortable(a) is json_sortable
+    assert q.is_sortable(a) is py_sortable
     return True
