@@ -3,7 +3,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    'a, b, c',
+    'a, b, function',
     [
         # Two-levels with list as leaf
         (
@@ -20,5 +20,5 @@ import pytest
         ),
     ]
 )
-def test_sorted(a, b, c, compare):
+def test_sorted(a, b, function, compare):
     assert compare
