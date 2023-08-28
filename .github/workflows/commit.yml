@@ -54,8 +54,8 @@ jobs:
         run: pip install $REQUIREMENTS
       - name: Benchmark - Basic Test
         run: |
-          python -m timeit -s "import sansjson" "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})"
-          python -m pyperf timeit -s "import sansjson"  "sansjson.sort({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench_basic.json
+          python -m timeit -s "import sansjson" "sansjson.sort_pyobject({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})"
+          python -m pyperf timeit -s "import sansjson"  "sansjson.sort_pyobject({'z': 1, 'a': { '12': True, 'ef': ['a', 1, False], 'ap': 0}})" -o bench_basic.json
           python -m pyperf stats bench_basic.json
       - name: Benchmark - Full Test
         run: |
