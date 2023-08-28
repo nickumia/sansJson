@@ -59,17 +59,18 @@ class Sorter(Hasher):
         if isinstance(deck, dict):
             self.data = deck
             return True
+        if isinstance(deck, list):
+            self.data = deck
+            return True
+        return False
+
+    def is_json_sortable(self, deck):
         if isinstance(deck, str):
             try:
                 self.data = json.loads(deck)
                 return True
             except json.decoder.JSONDecodeError:
-                # log.error(
-                #     'Input is str, but could not be parsed into JSON dict.')
                 return False
-        if isinstance(deck, list):
-            self.data = deck
-            return True
         return False
 
     def recursive_dict(self, context):
@@ -102,6 +103,10 @@ class Sorter(Hasher):
             sorted_dict = self.recursive_dict(context)
 
         return sorted_dict
+
+
+def _convert_to_json(data):
+    return json.dumps(data)
 
 
 def dict_sort_key(dicta, dictb):

@@ -231,4 +231,4 @@ a = [{
       "title": "BLM Idaho ACEC Historical Poly Hub"
     }]
 
-sansjson.sort(a)
+sansjson.sort_pyobject(a)
